@@ -1,2 +1,2 @@
 
-cppcheck --enable=all $FILE
+$COMPILE $FILE

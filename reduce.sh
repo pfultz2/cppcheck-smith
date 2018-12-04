@@ -10,6 +10,7 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 export FILE=$1
 export TEXT=$2
+export COMPILE=$DIR/compile.sh
 
 NPROC=`nproc`
 echo "creduce --n $NPROC ./reduce-build.sh $FILE"

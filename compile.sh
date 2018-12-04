@@ -1,7 +1,5 @@
 #!/bin/bash
 
-TMP_DIR=`mktemp -d`
-
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
   DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
@@ -10,22 +8,12 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-COMPILE=$DIR/compile.sh
+CSMITH_INCLUDE=$HOME/usr/include/csmith-2.3.0/
 
-csmith \
-    --no-checksum \
-    --lang-cpp \
-    --cpp11 \
-    -o $TMP_DIR/test.cpp
-
-$COMPILE $TMP_DIR/test.cpp
+clang++-6.0 -std=c++14 -fsyntax-only -Wno-c++11-narrowing -Wno-unused-command-line-argument -isystem $CSMITH_INCLUDE $1
 RES=$?
-
 if [ $RES -ne "0" ]; then
-    STAMP=`date "+%Y-%m-%dT%H_%M_%S"`
-    mv $TMP_DIR/test.cpp "fail.cppcheck.$STAMP.cpp"
+    exit 0
 fi
 
-rm -rf $TMP_DIR
-
-exit $RES
+cppcheck --enable=all -I$CSMITH_INCLUDE $1
