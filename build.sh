@@ -18,10 +18,16 @@ csmith \
     --cpp11 \
     -o $TMP_DIR/test.cpp
 
-$COMPILE $TMP_DIR/test.cpp
+$COMPILE $TMP_DIR/test.cpp |& tee $TMP_DIR/output
 RES=$?
-
 if [ $RES -ne "0" ]; then
+    STAMP=`date "+%Y-%m-%dT%H_%M_%S"`
+    mv $TMP_DIR/test.cpp "fail.cppcheck.$STAMP.cpp"
+fi
+
+grep -q "syntax error" $TMP_DIR/output
+RES=$?
+if [ $RES -eq "0" ]; then
     STAMP=`date "+%Y-%m-%dT%H_%M_%S"`
     mv $TMP_DIR/test.cpp "fail.cppcheck.$STAMP.cpp"
 fi
